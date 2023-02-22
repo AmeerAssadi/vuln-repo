@@ -68,6 +68,16 @@ resource "aws_db_instance" "disabled_postgres_pocs" {
   iam_database_authentication_enabled = false
 }
 
+resource "aws_db_instance" "disabled_postgres_poc_weekly" {
+  allocated_storage = 5
+  engine            = "postgres"
+  instance_class    = "db.t3.small"
+  password          = "password"
+  username          = "username"
+
+  iam_database_authentication_enabled = false
+}
+
 
 # unknown
 

@@ -37,7 +37,7 @@ jobs:
     - name: Run all the rules & send results to Defect Dojo, if not a PR
       id: run_rules_nonpr
       run: |
-        time semgrep scan --sarif --config ./rules/ ./code > nonpr.sarif;
+        semgrep scan --sarif --config ./rules/ ./code > nonpr.sarif;
         if [[ -s nonpr.sarif ]]; then
            python3 ./rules/scripts/send-results-to-defectdojo.py ./nonpr.sarif;
         fi

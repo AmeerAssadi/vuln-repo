@@ -47,28 +47,9 @@ resource "aws_db_instance" "disabled_mysql" {
 
   iam_database_authentication_enabled = false
 }
+
 # ruleid: aws-rds-iam-authentication-not-enabled
 resource "aws_db_instance" "disabled_postgres" {
-  allocated_storage = 5
-  engine            = "postgres"
-  instance_class    = "db.t3.small"
-  password          = "password"
-  username          = "username"
-
-  iam_database_authentication_enabled = false
-}
-
-resource "aws_db_instance" "disabled_postgres_pocs" {
-  allocated_storage = 5
-  engine            = "postgres"
-  instance_class    = "db.t3.small"
-  password          = "password"
-  username          = "username"
-
-  iam_database_authentication_enabled = false
-}
-
-resource "aws_db_instance" "disabled_postgres_poc_weekly" {
   allocated_storage = 5
   engine            = "postgres"
   instance_class    = "db.t3.small"

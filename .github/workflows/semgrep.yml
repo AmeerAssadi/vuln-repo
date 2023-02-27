@@ -34,7 +34,7 @@ jobs:
       uses: actions/setup-python@v4.5.0
       with:
         python-version: 3.8
-    - name: Run all the rules & send results to Defect Dojo, if not a PR
+    - name: Run all the rules & send results to Defect Dojo, if not a PR.
       id: run_rules_nonpr
       run: |
         semgrep scan --sarif --config ./rules/ ./code > nonpr.sarif;

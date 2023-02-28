@@ -39,6 +39,7 @@ jobs:
       id: run_rules_nonpr
       run: |
         semgrep scan --sarif --config ./rules/ ./code > nonpr.sarif;
+        cat nonpr.sarif
         if [[ -s nonpr.sarif ]]; then
            python3 ./rules/scripts/send-results-to-defectdojo.py ./nonpr.sarif;
            python3 ./rules/scripts/retrieve-results-from-json.py ./nonpr.sarif;

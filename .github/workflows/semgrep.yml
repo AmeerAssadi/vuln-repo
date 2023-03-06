@@ -35,7 +35,7 @@ jobs:
       uses: actions/setup-python@v4.5.0
       with:
         python-version: 3.8
-    - name: Run all the rules & send results to Defect Dojo, if not a PR.
+    - name: Run all the rules & send results to Slack, if not a PR.
       id: run_rules_nonpr
       run: |
         semgrep scan --json --config ./rules/ ./code > nonpr.json;
@@ -43,7 +43,7 @@ jobs:
            python3 ./rules/scripts/send-results-to-slack.py ./nonpr.json;
         fi
       if: github.event_name != 'pull_request'
-    - name: Run blocking rules & send results to Defect Dojo, if a PR. If it passes, continue with other rules
+    - name: Run blocking rules & send results to Slack, if a PR. If it passes, continue with other rules
       id: run_blocking_rules_pr
       env:
         SEMGREP_RULES: ./../rules/block/
@@ -55,7 +55,7 @@ jobs:
         fi
         semgrep ci
       if: github.event_name == 'pull_request'
-    - name: Run monitor rules & send results to Defect Dojo, if a PR
+    - name: Run monitor rules & send results to Slack, if a PR
       id: run_monitor_rules_pr
       env:
         SEMGREP_RULES: ./../rules/monitor/
@@ -66,7 +66,7 @@ jobs:
           python3 ./../rules/scripts/send-results-to-slack.py ./monitor_out.json;
         fi
       if: github.event_name == 'pull_request'
-    - name: Run comment rules, retrieve JSON results & send results to Defect Dojo, if a PR.
+    - name: Run comment rules, retrieve JSON results & send results to Slack, if a PR.
       id: run_comment_rules_pr
       env:
         SEMGREP_RULES: ./../rules/comment/

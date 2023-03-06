@@ -17,7 +17,7 @@ jobs:
     env:
       DEFECT_DOJO_TOKEN: ${{ secrets.DD_TOKEN }}
       DEFECT_DOJO_DOMAIN: ${{ secrets.DD_DOMAIN }}
-      SHERIFF_TOKEN: ${{ secrets.SHERIFF_TOKEN }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       DEFECT_DOJO_ENGAGEMENT_VALUE: '1'
       DEFECT_DOJO_SCAN_TYPE: SARIF
     steps:
@@ -40,7 +40,7 @@ jobs:
       run: |
         semgrep scan --json --config ./rules/ ./code > nonpr.json;
         if [[ -s nonpr.json ]]; then
-           python3 ./rules/scripts/retrieve-results-from-json.py ./nonpr.json;
+           python3 ./rules/scripts/send-results-to-slack.py ./nonpr.json;
         fi
       if: github.event_name != 'pull_request'
     - name: Run blocking rules & send results to Defect Dojo, if a PR. If it passes, continue with other rules
@@ -49,9 +49,9 @@ jobs:
         SEMGREP_RULES: ./../rules/block/
       run: |
         cd code;
-        echo $(semgrep ci --sarif) > blocking_out.sarif;
-        if [[ -s blocking_out.sarif ]]; then
-          python3 ./../rules/scripts/send-results-to-defectdojo.py ./blocking_out.sarif;
+        echo $(semgrep ci --json) > blocking_out.json;
+        if [[ -s blocking_out.json ]]; then
+          python3 ./../rules/scripts/send-results-to-slack.py ./blocking_out.json;
         fi
         semgrep ci
       if: github.event_name == 'pull_request'
@@ -61,9 +61,9 @@ jobs:
         SEMGREP_RULES: ./../rules/monitor/
       run: |
         cd code;
-        echo $(semgrep ci --sarif || true) > monitor_out.sarif;
-        if [[ -s monitor_out.sarif ]]; then
-          python3 ./../rules/scripts/send-results-to-defectdojo.py ./monitor_out.sarif;
+        echo $(semgrep ci --json || true) > monitor_out.json;
+        if [[ -s monitor_out.json ]]; then
+          python3 ./../rules/scripts/send-results-to-slack.py ./monitor_out.json;
         fi
       if: github.event_name == 'pull_request'
     - name: Run comment rules, retrieve JSON results & send results to Defect Dojo, if a PR.
@@ -73,7 +73,6 @@ jobs:
       run: |
         cd code;
         echo $(semgrep ci --json || true) > comment_out.json;
-        echo $(semgrep ci --sarif || true) > comment_out.sarif;
         if [[ -s comment_out.json ]]; then
           python3 ./../rules/scripts/retrieve-results-from-json.py ./comment_out.json ./comment_results.txt;
           if [[ -s comment_results.txt ]]; then
@@ -82,8 +81,8 @@ jobs:
             echo "::set-output name=comment_results_file_exists::False"
           fi
         fi
-        if [[ -s comment_out.sarif ]]; then
-          python3 ./../rules/scripts/send-results-to-defectdojo.py ./comment_out.sarif;
+        if [[ -s comment_out.json ]]; then
+          python3 ./../rules/scripts/send-results-to-slack.py ./comment_out.json;
         fi
       if: github.event_name == 'pull_request'
     - name: Rename the comment results file to final results file if that file exists

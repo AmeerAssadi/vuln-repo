@@ -59,6 +59,17 @@ resource "aws_db_instance" "disabled_postgres" {
   iam_database_authentication_enabled = false
 }
 
+resource "aws_db_instance" "disabled_postgres_testslack" {
+  allocated_storage = 5
+  engine            = "postgres"
+  instance_class    = "db.t3.small"
+  password          = "password"
+  username          = "username"
+
+  iam_database_authentication_enabled = false
+}
+
+
 
 # unknown
 

@@ -17,7 +17,7 @@ jobs:
     env:
       DEFECT_DOJO_TOKEN: ${{ secrets.DD_TOKEN }}
       DEFECT_DOJO_DOMAIN: ${{ secrets.DD_DOMAIN }}
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      SHERIFF_TOKEN: ${{ secrets.SHERIFF_TOKEN }}
       DEFECT_DOJO_ENGAGEMENT_VALUE: '1'
       DEFECT_DOJO_SCAN_TYPE: SARIF
     steps:
